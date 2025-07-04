@@ -22,12 +22,13 @@ Item {
     readonly property int workspaceGroup: Math.floor((monitor.activeWorkspace?.id - 1) / Config.options.bar.workspaces.shown)
     property list<bool> workspaceOccupied: []
     property int widgetPadding: 4
-    property int workspaceButtonWidth: 26
-    property real workspaceIconSize: workspaceButtonWidth * 0.69
-    property real workspaceIconSizeShrinked: workspaceButtonWidth * 0.55
+    property int baseWorkspaceButtonWidth: 26
+    property real workspaceIconSize: baseWorkspaceButtonWidth * 0.69
+    property real workspaceIconSizeShrinked: baseWorkspaceButtonWidth * 0.55
     property real workspaceIconOpacityShrinked: 1
     property real workspaceIconMarginShrinked: -4
     property int workspaceIndexInGroup: (monitor.activeWorkspace?.id - 1) % Config.options.bar.workspaces.shown
+    property int maxIconsPerWorkspace: 4 //
 
     // Function to update workspaceOccupied
     function updateWorkspaceOccupied() {
@@ -85,8 +86,29 @@ Item {
 
             Rectangle {
                 z: 1
-                implicitWidth: workspaceButtonWidth
-                implicitHeight: workspaceButtonWidth
+                property var workspaceWindows: {
+                    const windowsInThisWorkspace = HyprlandData.windowList.filter(w => w.workspace.id === workspaceGroup * Config.options.bar.workspaces.shown + index + 1)
+                    const uniqueApps = []
+                    const seenClasses = new Set()
+                    
+                    for (const win of windowsInThisWorkspace) {
+                        if (!seenClasses.has(win.class) && uniqueApps.length < maxIconsPerWorkspace) {
+                            uniqueApps.push(win)
+                            seenClasses.add(win.class)
+                        }
+                    }
+                    return uniqueApps
+                }
+                property int dynamicWidth: baseWorkspaceButtonWidth + (workspaceWindows.length > 0 ? (workspaceWindows.length - 1) * (baseWorkspaceButtonWidth - 4) : 0)
+                implicitWidth: dynamicWidth
+                implicitHeight: baseWorkspaceButtonWidth
+                
+                Behavior on dynamicWidth {
+                    animation: Appearance.animation.elementMove.numberAnimation.createObject(this)
+                }
+                Behavior on implicitWidth {
+                    animation: Appearance.animation.elementMove.numberAnimation.createObject(this)
+                }
                 radius: Appearance.rounding.full
                 property var leftOccupied: (workspaceOccupied[index-1] && !(!activeWindow?.activated && monitor.activeWorkspace?.id === index))
                 property var rightOccupied: (workspaceOccupied[index+1] && !(!activeWindow?.activated && monitor.activeWorkspace?.id === index+2))
@@ -130,8 +152,50 @@ Item {
 
         property real idx1: workspaceIndexInGroup
         property real idx2: workspaceIndexInGroup
-        x: Math.min(idx1, idx2) * workspaceButtonWidth + activeWorkspaceMargin
-        implicitWidth: Math.abs(idx1 - idx2) * workspaceButtonWidth + workspaceButtonWidth - activeWorkspaceMargin * 2
+        property real dynamicX: {
+            let x = 0
+            for (let i = 0; i < Math.min(idx1, idx2); i++) {
+                const wsIndex = i
+                const windowsInWs = HyprlandData.windowList.filter(w => w.workspace.id === workspaceGroup * Config.options.bar.workspaces.shown + wsIndex + 1)
+                const uniqueApps = new Set(windowsInWs.map(w => w.class)).size
+                const clampedApps = Math.min(uniqueApps, maxIconsPerWorkspace)
+                x += baseWorkspaceButtonWidth + (clampedApps > 0 ? (clampedApps - 1) * (baseWorkspaceButtonWidth - 4) : 0)
+            }
+            return x
+        }
+        property real dynamicWidth: {
+            const windowsInWs = HyprlandData.windowList.filter(w => w.workspace.id === monitor.activeWorkspace?.id)
+            const uniqueApps = new Set(windowsInWs.map(w => w.class)).size
+            const clampedApps = Math.min(uniqueApps, maxIconsPerWorkspace)
+            return baseWorkspaceButtonWidth + (clampedApps > 0 ? (clampedApps - 1) * (baseWorkspaceButtonWidth - 4) : 0)
+        }
+        x: dynamicX + activeWorkspaceMargin
+        implicitWidth: dynamicWidth - activeWorkspaceMargin * 2
+        
+        Behavior on x {
+            NumberAnimation {
+                duration: 200
+                easing.type: Easing.OutCubic
+            }
+        }
+        Behavior on implicitWidth {
+            NumberAnimation {
+                duration: 200
+                easing.type: Easing.OutCubic
+            }
+        }
+        Behavior on dynamicX {
+            NumberAnimation {
+                duration: 200
+                easing.type: Easing.OutCubic
+            }
+        }
+        Behavior on dynamicWidth {
+            NumberAnimation {
+                duration: 200
+                easing.type: Easing.OutCubic
+            }
+        }
 
         Behavior on activeWorkspaceMargin {
             animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
@@ -165,23 +229,51 @@ Item {
             Button {
                 id: button
                 property int workspaceValue: workspaceGroup * Config.options.bar.workspaces.shown + index + 1
+                property var workspaceWindows: {
+                    const windowsInThisWorkspace = HyprlandData.windowList.filter(w => w.workspace.id == workspaceValue)
+                    const uniqueApps = []
+                    const seenClasses = new Set()
+                    
+                    for (const win of windowsInThisWorkspace) {
+                        if (!seenClasses.has(win.class) && uniqueApps.length < maxIconsPerWorkspace) {
+                            uniqueApps.push(win)
+                            seenClasses.add(win.class)
+                        }
+                    }
+                    return uniqueApps
+                }
+                property int dynamicWidth: baseWorkspaceButtonWidth + (workspaceWindows.length > 0 ? (workspaceWindows.length - 1) * (baseWorkspaceButtonWidth - 4) : 0)
                 Layout.fillHeight: true
                 onPressed: Hyprland.dispatch(`workspace ${workspaceValue}`)
-                width: workspaceButtonWidth
+                width: dynamicWidth
+                
+                Behavior on width {
+                    NumberAnimation {
+                        duration: 200
+                        easing.type: Easing.OutCubic
+                    }
+                }
+                Behavior on dynamicWidth {
+                    NumberAnimation {
+                        duration: 200
+                        easing.type: Easing.OutCubic
+                    }
+                }
                 
                 background: Item {
                     id: workspaceButtonBackground
-                    implicitWidth: workspaceButtonWidth
-                    implicitHeight: workspaceButtonWidth
-                    property var biggestWindow: {
-                        const windowsInThisWorkspace = HyprlandData.windowList.filter(w => w.workspace.id == button.workspaceValue)
-                        return windowsInThisWorkspace.reduce((maxWin, win) => {
-                            const maxArea = (maxWin?.size?.[0] ?? 0) * (maxWin?.size?.[1] ?? 0)
-                            const winArea = (win?.size?.[0] ?? 0) * (win?.size?.[1] ?? 0)
-                            return winArea > maxArea ? win : maxWin
-                        }, null)
+                    implicitWidth: button.dynamicWidth
+                    implicitHeight: baseWorkspaceButtonWidth
+                    
+                    property var workspaceWindows: button.workspaceWindows
+                    property var biggestWindow: workspaceWindows.length > 0 ? workspaceWindows[0] : null
+                    
+                    Behavior on implicitWidth {
+                        NumberAnimation {
+                            duration: 200
+                            easing.type: Easing.OutCubic
+                        }
                     }
-                    property var mainAppIconSource: Quickshell.iconPath(AppSearch.guessIcon(biggestWindow?.class), "image-missing")
 
                     StyledText { // Workspace number text
                         opacity: GlobalStates.workspaceShowNumbers
@@ -205,6 +297,7 @@ Item {
                             animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
                         }
                     }
+                    
                     Rectangle { // Dot instead of ws number
                         id: wsDot
                         opacity: (Config.options?.bar.workspaces.alwaysShowNumbers
@@ -213,7 +306,7 @@ Item {
                             ) ? 0 : 1
                         visible: opacity > 0
                         anchors.centerIn: parent
-                        width: workspaceButtonWidth * 0.18
+                        width: baseWorkspaceButtonWidth * 0.18
                         height: width
                         radius: width / 2
                         color: (monitor.activeWorkspace?.id == button.workspaceValue) ? 
@@ -225,66 +318,105 @@ Item {
                             animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
                         }
                     }
-                    Item { // Main app icon
+                    
+                    // Multiple app icons laid out horizontally
+                    Row {
+                        id: iconRow
                         anchors.centerIn: parent
-                        width: workspaceButtonWidth
-                        height: workspaceButtonWidth
+                        spacing: 2
                         opacity: !Config.options?.bar.workspaces.showAppIcons ? 0 :
-                            (workspaceButtonBackground.biggestWindow && !GlobalStates.workspaceShowNumbers && Config.options?.bar.workspaces.showAppIcons) ? 
-                            1 : workspaceButtonBackground.biggestWindow ? workspaceIconOpacityShrinked : 0
-                            visible: opacity > 0
-                        IconImage {
-                            id: mainAppIcon
-                            anchors.bottom: parent.bottom
-                            anchors.right: parent.right
-                            anchors.bottomMargin: (!GlobalStates.workspaceShowNumbers && Config.options?.bar.workspaces.showAppIcons) ? 
-                                (workspaceButtonWidth - workspaceIconSize) / 2 : workspaceIconMarginShrinked
-                            anchors.rightMargin: (!GlobalStates.workspaceShowNumbers && Config.options?.bar.workspaces.showAppIcons) ? 
-                                (workspaceButtonWidth - workspaceIconSize) / 2 : workspaceIconMarginShrinked
-
-                            source: workspaceButtonBackground.mainAppIconSource
-                            implicitSize: (!GlobalStates.workspaceShowNumbers && Config.options?.bar.workspaces.showAppIcons) ? workspaceIconSize : workspaceIconSizeShrinked
-
-                            Behavior on opacity {
-                                animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
-                            }
-                            Behavior on anchors.bottomMargin {
-                                animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
-                            }
-                            Behavior on anchors.rightMargin {
-                                animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
-                            }
-                            Behavior on implicitSize {
-                                animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
+                            (workspaceButtonBackground.workspaceWindows.length > 0 && !GlobalStates.workspaceShowNumbers && Config.options?.bar.workspaces.showAppIcons) ? 
+                            1 : workspaceButtonBackground.workspaceWindows.length > 0 ? workspaceIconOpacityShrinked : 0
+                        visible: opacity > 0
+                        
+                        Repeater {
+                            model: workspaceButtonBackground.workspaceWindows
+                            
+                            Item {
+                                width: (!GlobalStates.workspaceShowNumbers && Config.options?.bar.workspaces.showAppIcons) ? 
+                                    workspaceIconSize : workspaceIconSizeShrinked
+                                height: width
+                                
+                                // Smooth entry/exit animation for icons
+                                scale: 1.0
+                                opacity: 1.0
+                                
+                                Behavior on scale {
+                                    NumberAnimation {
+                                        duration: 150
+                                        easing.type: Easing.OutBack
+                                    }
+                                }
+                                Behavior on opacity {
+                                    NumberAnimation {
+                                        duration: 150
+                                        easing.type: Easing.OutQuad
+                                    }
+                                }
+                                
+                                Component.onCompleted: {
+                                    scale = 0.0
+                                    opacity = 0.0
+                                    scaleAnimation.start()
+                                    opacityAnimation.start()
+                                }
+                                
+                                NumberAnimation on scale {
+                                    id: scaleAnimation
+                                    to: 1.0
+                                    duration: 200
+                                    easing.type: Easing.OutBack
+                                    running: false
+                                }
+                                
+                                NumberAnimation on opacity {
+                                    id: opacityAnimation
+                                    to: 1.0
+                                    duration: 200
+                                    easing.type: Easing.OutQuad
+                                    running: false
+                                }
+                                
+                                IconImage {
+                                    id: appIcon
+                                    anchors.fill: parent
+                                    source: Quickshell.iconPath(AppSearch.guessIcon(modelData?.class), "image-missing")
+                                    
+                                    Behavior on opacity {
+                                        animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
+                                    }
+                                }
+                                
+                                Loader {
+                                    active: Config.options.bar.workspaces.monochromeIcons
+                                    anchors.fill: appIcon
+                                    sourceComponent: Item {
+                                        Desaturate {
+                                            id: desaturatedIcon
+                                            visible: false // There's already color overlay
+                                            anchors.fill: parent
+                                            source: appIcon
+                                            desaturation: 0
+                                        }
+                                        ColorOverlay {
+                                            anchors.fill: desaturatedIcon
+                                            source: desaturatedIcon
+                                            color: ColorUtils.transparentize(wsDot.color, 0.6)
+                                        }
+                                    }
+                                }
                             }
                         }
-
-                        Loader {
-                            active: Config.options.bar.workspaces.monochromeIcons
-                            anchors.fill: mainAppIcon
-                            sourceComponent: Item {
-                                Desaturate {
-                                    id: desaturatedIcon
-                                    visible: false // There's already color overlay
-                                    anchors.fill: parent
-                                    source: mainAppIcon
-                                    desaturation: 0.1
-                                }
-                                ColorOverlay {
-                                    anchors.fill: desaturatedIcon
-                                    source: desaturatedIcon
-                                    color: ColorUtils.transparentize(wsDot.color, 0.6)
-                                }
+                        
+                        Behavior on opacity {
+                            NumberAnimation {
+                                duration: 150
+                                easing.type: Easing.OutQuad
                             }
                         }
                     }
                 }
-                
-
             }
-
         }
-
     }
-
 }
