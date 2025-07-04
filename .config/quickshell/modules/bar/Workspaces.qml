@@ -268,7 +268,7 @@ Item {
                                     visible: false // There's already color overlay
                                     anchors.fill: parent
                                     source: mainAppIcon
-                                    desaturation: 1
+                                    desaturation: 0.1
                                 }
                                 ColorOverlay {
                                     anchors.fill: desaturatedIcon
