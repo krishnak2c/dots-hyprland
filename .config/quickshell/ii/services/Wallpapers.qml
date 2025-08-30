@@ -15,6 +15,7 @@ Singleton {
     id: root
 
     property string thumbgenScriptPath: `${FileUtils.trimFileProtocol(Directories.scriptPath)}/thumbnails/thumbgen.py`
+    property string generateThumbnailsMagicScriptPath: `${FileUtils.trimFileProtocol(Directories.scriptPath)}/thumbnails/generate-thumbnails-magick.sh`
     property string directory: FileUtils.trimFileProtocol(`${Directories.pictures}/Wallpapers`)
     property alias folderModel: folderModel // Expose for direct binding when needed
     property string searchQuery: ""
@@ -76,11 +77,21 @@ Singleton {
         function setDirectoryIfValid(path) {
             validateDirProc.nicePath = FileUtils.trimFileProtocol(path).replace(/\/+$/, "")
             if (/^\/*$/.test(validateDirProc.nicePath)) validateDirProc.nicePath = "/";
-            validateDirProc.exec(["test", "-d", nicePath])
+            validateDirProc.exec([
+                "bash", "-c",
+                `if [ -d "${validateDirProc.nicePath}" ]; then echo dir; elif [ -f "${validateDirProc.nicePath}" ]; then echo file; else echo invalid; fi`
+            ])
         }
-        onExited: (exitCode, exitStatus) => {
-            if (exitCode === 0) {
-                root.directory = validateDirProc.nicePath
+        stdout: StdioCollector {
+            onStreamFinished: {
+                const result = text.trim()
+                if (result === "dir") {
+                    root.directory = validateDirProc.nicePath
+                } else if (result === "file") {
+                    root.directory = FileUtils.parentDirectory(validateDirProc.nicePath)
+                } else {
+                    // Ignore
+                }
             }
         }
     }
@@ -114,9 +125,8 @@ Singleton {
         thumbgenProc.directory = root.directory
         thumbgenProc.running = false
         thumbgenProc.command = [
-            thumbgenScriptPath,
-            "--size", size,
-            "-d", `${root.directory}`
+            "bash", "-c",
+            `${thumbgenScriptPath} --size ${size} -d ${root.directory} || ${generateThumbnailsMagicScriptPath} --size ${size} -d ${root.directory}`,
         ]
         thumbgenProc.running = true
     }
