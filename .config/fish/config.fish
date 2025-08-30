@@ -1,12 +1,5 @@
 set -g fish_greeting
-
-
-if type -q starship
-    starship init fish | source
-    set -gx STARSHIP_CACHE $XDG_CACHE_HOME/starship
-    set -gx STARSHIP_CONFIG $XDG_CONFIG_HOME/starship/starship.toml
-end
-
+starship init fish | source
 
 if type -q duf
     function df -d "Run duf with last argument if valid, else run duf"
@@ -43,7 +36,7 @@ alias ls='eza -1 --icons=auto'
 alias ll='eza -lha --icons=auto --sort=name --group-directories-first'
 alias ld='eza -lhD --icons=auto'
 alias lt='eza --icons=auto --tree'
-alias un='sudo $aurhelper -Rns $argv'
+alias un='sudo pacman -R $argv'
 alias up='sudo $aurhelper -Syu $argv'
 alias pl='$aurhelper -Qs'
 alias pa='sudo $aurhelper -S $argv'
