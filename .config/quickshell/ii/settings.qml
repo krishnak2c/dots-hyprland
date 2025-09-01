@@ -24,9 +24,9 @@ ApplicationWindow {
     property bool showNextTime: false
     property var pages: [
         {
-            name: Translation.tr("Style"),
-            icon: "palette",
-            component: "modules/settings/StyleConfig.qml"
+            name: Translation.tr("Quick"),
+            icon: "instant_mix",
+            component: "modules/settings/QuickConfig.qml"
         },
         {
             name: Translation.tr("Interface"),
@@ -228,19 +228,36 @@ ApplicationWindow {
                             easing.type: Appearance.animation.elementMoveExit.type
                             easing.bezierCurve: Appearance.animationCurves.emphasizedFirstHalf
                         }
-                        PropertyAction {
-                            target: pageLoader
-                            property: "source"
-                            value: root.pages[root.currentPage].component
+                        ParallelAnimation {
+                            PropertyAction {
+                                target: pageLoader
+                                property: "source"
+                                value: root.pages[root.currentPage].component
+                            }
+                            PropertyAction {
+                                target: pageLoader
+                                property: "anchors.topMargin"
+                                value: 20
+                            }
                         }
-                        NumberAnimation {
-                            target: pageLoader
-                            properties: "opacity"
-                            from: 0
-                            to: 1
-                            duration: 200
-                            easing.type: Appearance.animation.elementMoveEnter.type
-                            easing.bezierCurve: Appearance.animationCurves.emphasizedLastHalf
+                        ParallelAnimation {
+                            NumberAnimation {
+                                target: pageLoader
+                                properties: "opacity"
+                                from: 0
+                                to: 1
+                                duration: 200
+                                easing.type: Appearance.animation.elementMoveEnter.type
+                                easing.bezierCurve: Appearance.animationCurves.emphasizedLastHalf
+                            }
+                            NumberAnimation {
+                                target: pageLoader
+                                properties: "anchors.topMargin"
+                                to: 0
+                                duration: 200
+                                easing.type: Appearance.animation.elementMoveEnter.type
+                                easing.bezierCurve: Appearance.animationCurves.emphasizedLastHalf
+                            }
                         }
                     }
                 }
