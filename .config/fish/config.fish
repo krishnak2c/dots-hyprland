@@ -1,34 +1,32 @@
-set -g fish_greeting
-starship init fish | source
-
-if type -q duf
-    function df -d "Run duf with last argument if valid, else run duf"
-        if set -q argv[-1] && test -e $argv[-1]
-            duf $argv[-1]
-        else
-            duf
-        end
-    end
+function fish_prompt -d "Write out the prompt"
+    # This shows up as USER@HOST /home/user/ >, with the directory colored
+    # $USER and $hostname are set by fish, so you can just use them
+    # instead of using `whoami` and `hostname`
+    printf '%s@%s %s%s%s > ' $USER $hostname \
+        (set_color $fish_color_cwd) (prompt_pwd) (set_color normal)
 end
 
-# fzf
+if status is-interactive
+    # Commands to run in interactive sessions can go here
+    set fish_greeting
 
+end
 
+starship init fish | source
+if test -f ~/.local/state/quickshell/user/generated/terminal/sequences.txt
+    cat ~/.local/state/quickshell/user/generated/terminal/sequences.txt
+end
 
-# NOTE: binds Alt+n to inserting the nth command from history in edit buffer
-# e.g. Alt+4 is same as pressing Up arrow key 4 times
-# really helpful if you get used to it
-bind_M_n_history
+alias pamcan pacman
+alias ls 'eza --icons'
+alias clear "printf '\033[2J\033[3J\033[1;1H'"
+alias q 'qs -c ii'
+    
 
-
-
-# example integration with bat : <cltr+f>
-# bind -M insert \ce '$EDITOR $(fzf --preview="bat --color=always --plain {}")'
-
-
-set fish_pager_color_prefix cyan
-set fish_color_autosuggestion brblack
-
+# function fish_prompt
+#   set_color cyan; echo (pwd)
+#   set_color green; echo '> '
+# end
 # List Directory
 alias c='clear'
 alias l='eza -lh --icons=auto'

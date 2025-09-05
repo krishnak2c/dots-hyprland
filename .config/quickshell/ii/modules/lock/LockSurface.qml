@@ -1,6 +1,5 @@
 import QtQuick
 import QtQuick.Layouts
-import Qt5Compat.GraphicalEffects
 import qs
 import qs.services
 import qs.modules.common
@@ -17,15 +16,30 @@ MouseArea {
         passwordBox.forceActiveFocus();
     }
 
-    Component.onCompleted: {
-        forceFieldFocus();
-    }
-
     Connections {
         target: context
         function onShouldReFocus() {
             forceFieldFocus();
         }
+    }
+
+    property real toolbarScale: 0.9
+    property real toolbarOpacity: 0
+    Behavior on toolbarScale {
+        NumberAnimation {
+            duration: Appearance.animation.elementMove.duration
+            easing.type: Appearance.animation.elementMove.type
+            easing.bezierCurve: Appearance.animationCurves.expressiveFastSpatial
+        }
+    }
+    Behavior on toolbarOpacity {
+        animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
+    }
+
+    Component.onCompleted: {
+        forceFieldFocus();
+        toolbarScale = 1;
+        toolbarOpacity = 1;
     }
 
     Keys.onPressed: event => { // Esc to clear
@@ -63,6 +77,7 @@ MouseArea {
 
     // Controls
     Toolbar {
+        id: mainIsland
         anchors {
             horizontalCenter: parent.horizontalCenter
             bottom: parent.bottom
@@ -72,38 +87,8 @@ MouseArea {
             animation: Appearance.animation.elementMove.numberAnimation.createObject(this)
         }
 
-        scale: 0.9
-        opacity: 0
-        Component.onCompleted: {
-            scale = 1
-            opacity = 1
-        }
-        Behavior on scale {
-            NumberAnimation {
-                duration: Appearance.animation.elementMove.duration
-                easing.type: Appearance.animation.elementMove.type
-                easing.bezierCurve: Appearance.animationCurves.expressiveFastSpatial
-            }
-        }
-        Behavior on opacity {
-            animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
-        }
-
-        ToolbarButton {
-            id: sleepButton
-            implicitWidth: height
-
-            onClicked: Session.suspend()
-
-            contentItem: MaterialSymbol {
-                anchors.centerIn: parent
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-                iconSize: 24
-                text: "dark_mode"
-                color: Appearance.colors.colOnPrimaryContainer
-            }
-        }
+        scale: root.toolbarScale
+        opacity: root.toolbarOpacity
 
         ToolbarTextField {
             id: passwordBox
@@ -147,5 +132,71 @@ MouseArea {
                 color: confirmButton.enabled ? Appearance.colors.colOnPrimary : Appearance.colors.colSubtext
             }
         }
+    }
+
+    Toolbar {
+        anchors {
+            right: mainIsland.left
+            top: mainIsland.top
+            bottom: mainIsland.bottom
+            rightMargin: 20
+        }
+
+        scale: root.toolbarScale
+        opacity: root.toolbarOpacity
+
+        ToolbarButton {
+            id: powerButton
+            implicitWidth: height
+
+            onClicked: Session.poweroff()
+
+            contentItem: MaterialSymbol {
+                anchors.centerIn: parent
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                iconSize: 24
+                text: "power_settings_new"
+                color: Appearance.colors.colOnSurfaceVariant
+            }
+        }
+
+        ToolbarButton {
+            id: sleepButton
+            implicitWidth: height
+
+            onClicked: Session.suspend()
+
+            contentItem: MaterialSymbol {
+                anchors.centerIn: parent
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                iconSize: 24
+                text: "dark_mode"
+                color: Appearance.colors.colOnSurfaceVariant
+            }
+        }
+
+        RowLayout {
+            spacing: 6
+            Layout.fillHeight: true
+            Layout.leftMargin: 10
+            Layout.rightMargin: 10
+
+            MaterialSymbol {
+                id: boltIcon
+                Layout.alignment: Qt.AlignVCenter
+                Layout.leftMargin: -2
+                Layout.rightMargin: -2
+                fill: 1
+                text: Battery.isCharging ? "bolt" : "battery_android_full"
+                iconSize: Appearance.font.pixelSize.huge
+                animateChange: true
+            }
+            StyledText {
+                Layout.alignment: Qt.AlignVCenter
+                text: (Battery.percentage * 100)
+            }
+        }        
     }
 }
