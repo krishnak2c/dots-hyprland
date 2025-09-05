@@ -54,8 +54,8 @@ Item { // Bar content region
         height: (root.height - middleSection.height) / 2
         width: Appearance.sizes.verticalBarWidth
 
-        onScrollDown: root.brightnessMonitor.setBrightness(root.brightnessMonitor.brightness - 0.05)
-        onScrollUp: root.brightnessMonitor.setBrightness(root.brightnessMonitor.brightness + 0.05)
+        onScrollDown: root.brightnessMonitor.setBrightness(root.brightnessMonitor.brightness - 0.03)
+        onScrollUp: root.brightnessMonitor.setBrightness(root.brightnessMonitor.brightness + 0.03)
         onMovedAway: GlobalStates.osdBrightnessOpen = false
         onPressed: event => {
             if (event.button === Qt.LeftButton)
@@ -72,7 +72,19 @@ Item { // Bar content region
                 Layout.topMargin: (Appearance.sizes.baseVerticalBarWidth - implicitWidth) / 2 + Appearance.sizes.hyprlandGapsOut
                 colBackground: barTopSectionMouseArea.hovered ? Appearance.colors.colLayer1Hover : ColorUtils.transparentize(Appearance.colors.colLayer1Hover, 1)
             }
+                VerticalClockWidget {
+			    Layout.leftMargin: 3
+                Layout.fillWidth: true
+                Layout.fillHeight: false
+            }
 
+            HorizontalBarSeparator {}
+
+            VerticalDateWidget {
+                 Layout.leftMargin: 2.4
+                Layout.fillWidth: true
+                Layout.fillHeight: false
+            }
             Item {
                 Layout.fillHeight: true
             }
@@ -84,22 +96,10 @@ Item { // Bar content region
         id: middleSection
         anchors.centerIn: parent
         spacing: 4
-
-        Bar.BarGroup {
-            vertical: true
-            padding: 8
-            Resources {
-                Layout.fillWidth: true
-                Layout.fillHeight: false
-            }
-            
-            HorizontalBarSeparator {}
-
-            VerticalMedia {
-                Layout.fillWidth: true
-                Layout.fillHeight: false
-            }
-        }
+        
+    //    Bar.BarGroup {
+    //        vertical: true
+        //    padding: 10}
 
         HorizontalBarSeparator {
             visible: Config.options?.bar.borderless
@@ -108,7 +108,7 @@ Item { // Bar content region
         Bar.BarGroup {
             id: middleCenterGroup
             vertical: true
-            padding: 6
+            padding: 10
 
             Workspaces {
                 id: workspacesWidget
@@ -132,20 +132,19 @@ Item { // Bar content region
 
         Bar.BarGroup {
             vertical: true
-            padding: 8
-            
-            VerticalClockWidget {
+            padding: 10
+            Resources {
                 Layout.fillWidth: true
                 Layout.fillHeight: false
             }
-
+            
             HorizontalBarSeparator {}
 
-            VerticalDateWidget {
+            VerticalMedia {
                 Layout.fillWidth: true
-                Layout.fillHeight: false
+                Layout.fillHeight: true
             }
-
+            
             HorizontalBarSeparator {
                 visible: UPower.displayDevice.isLaptopBattery
             }
@@ -155,10 +154,8 @@ Item { // Bar content region
                 Layout.fillWidth: true
                 Layout.fillHeight: false
             }
-
-
-            
         }
+
     }
 
     FocusedScrollMouseArea { // Bottom section | scroll to change volume

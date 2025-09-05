@@ -14,7 +14,7 @@ import Quickshell.Hyprland
 
 Scope {
     id: root
-    property int sidebarWidth: Appearance.sizes.sidebarWidth
+    property int sidebarWidth:400
 
     PanelWindow {
         id: sidebarRoot
@@ -27,6 +27,7 @@ Scope {
         exclusiveZone: 0
         implicitWidth: sidebarWidth
         WlrLayershell.namespace: "quickshell:sidebarRight"
+        WlrLayershell.layer: WlrLayer.Overlay
         // Hyprland 0.49: Focus is always exclusive and setting this breaks mouse focus grab
         // WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
         color: "transparent"

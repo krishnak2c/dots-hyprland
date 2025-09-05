@@ -61,10 +61,10 @@ Item {
 
                 CustomIcon {
                     id: distroIcon
-                    width: 25
-                    height: 25
+                    width: 35
+                    height: 35
                     source: SystemInfo.distroIcon
-                    colorize: true
+                    colorize: false
                     color: Appearance.colors.colOnLayer0
                 }
 

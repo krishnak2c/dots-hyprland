@@ -13,8 +13,8 @@ import Quickshell.Wayland
 
 Item {
     id: root
-    property real maxWindowPreviewHeight: 200
-    property real maxWindowPreviewWidth: 300
+    property real maxWindowPreviewHeight: 500
+    property real maxWindowPreviewWidth: 700
     property real windowControlsHeight: 30
     property real buttonPadding: 5
 
@@ -127,7 +127,7 @@ Item {
         }
         Timer {
             id: updateTimer
-            interval: 100
+            interval: 500
             onTriggered: {
                 previewPopup.show = previewPopup.shouldShow
             }
@@ -142,13 +142,13 @@ Item {
         visible: popupBackground.visible
         color: "transparent"
         implicitWidth: root.QsWindow.window?.width ?? 1
-        implicitHeight: popupMouseArea.implicitHeight + root.windowControlsHeight + Appearance.sizes.elevationMargin * 2
+        implicitHeight: popupMouseArea.implicitHeight + root.windowControlsHeight + Appearance.sizes.elevationMargin * 4
 
         MouseArea {
             id: popupMouseArea
             anchors.bottom: parent.bottom
             implicitWidth: popupBackground.implicitWidth + Appearance.sizes.elevationMargin * 2
-            implicitHeight: root.maxWindowPreviewHeight + root.windowControlsHeight + Appearance.sizes.elevationMargin * 2
+            implicitHeight: root.maxWindowPreviewHeight + root.windowControlsHeight + Appearance.sizes.elevationMargin * 9
             hoverEnabled: true
             x: {
                 const itemCenter = root.QsWindow?.mapFromItem(root.lastHoveredButton, root.lastHoveredButton?.width / 2, 0);

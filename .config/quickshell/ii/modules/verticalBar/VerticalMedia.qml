@@ -44,7 +44,7 @@ MouseArea {
     ClippedFilledCircularProgress {
         id: mediaCircProg
         anchors.centerIn: parent
-        implicitSize: 20
+        implicitSize: 30
 
         lineWidth: Appearance.rounding.unsharpen
         value: activePlayer?.position / activePlayer?.length

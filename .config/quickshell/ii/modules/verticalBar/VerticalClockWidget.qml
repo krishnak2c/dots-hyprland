@@ -23,7 +23,7 @@ Item {
                 Layout.alignment: Qt.AlignHCenter
                 font.pixelSize: modelData.match(/am|pm/i) ? 
                     Appearance.font.pixelSize.smaller // Smaller "am"/"pm" text
-                    : Appearance.font.pixelSize.large
+                    : 35
                 color: Appearance.colors.colOnLayer1
                 text: modelData.padStart(2, "0")
             }

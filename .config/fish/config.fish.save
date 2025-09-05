@@ -57,5 +57,5 @@ alias .5='cd ../../../../..'
 set -gx PATH $PATH /home/krishna/flutter/bin
     
 alias update='sudo pacman -Syu && yay -Syu --devel'
-
-fish_add_path /home/krishna/.spicetify
+alias update='ffm'
+alias

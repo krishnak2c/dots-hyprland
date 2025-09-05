@@ -21,13 +21,13 @@ MouseArea {
         id: batteryProgress
         anchors.centerIn: parent
         vertical: true
-        valueBarWidth: 21
-        valueBarHeight: 40
+        valueBarWidth: 26
+        valueBarHeight: 45
         value: percentage
         highlightColor: (isLow && !isCharging) ? Appearance.m3colors.m3error : Appearance.colors.colOnSecondaryContainer
 
         font {
-            pixelSize: text.length > 2 ? 11 : 13
+            pixelSize: text.length > 2 ? 12 : 13
             weight: text.length > 2 ? Font.Medium : Font.DemiBold
         }
 

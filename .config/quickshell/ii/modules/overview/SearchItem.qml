@@ -1,4 +1,3 @@
-// pragma NativeMethodBehavior: AcceptThisObject
 import qs
 import qs.services
 import qs.modules.common
@@ -16,11 +15,10 @@ RippleButton {
     property string query
     property bool entryShown: entry?.shown ?? true
     property string itemType: entry?.type ?? Translation.tr("App")
-    property string itemName: entry?.name
+    property string itemName: entry?.name ?? ""
     property string itemIcon: entry?.icon ?? ""
-    property var itemExecute: entry?.execute
     property string fontType: entry?.fontType ?? "main"
-    property string itemClickActionName: entry?.clickActionName
+    property string itemClickActionName: entry?.clickActionName ?? ""
     property string bigText: entry?.bigText ?? ""
     property string materialSymbol: entry?.materialSymbol ?? ""
     property string cliphistRawString: entry?.cliphistRawString ?? ""
@@ -34,8 +32,8 @@ RippleButton {
     implicitHeight: rowLayout.implicitHeight + root.buttonVerticalPadding * 2
     implicitWidth: rowLayout.implicitWidth + root.buttonHorizontalPadding * 2
     buttonRadius: Appearance.rounding.normal
-    colBackground: (root.down || root.keyboardDown) ? Appearance.colors.colSecondaryContainerActive : 
-        ((root.hovered || root.focus) ? Appearance.colors.colSecondaryContainer : 
+    colBackground: (root.down || root.keyboardDown) ? Appearance.colors.colSecondaryContainerActive :
+        ((root.hovered || root.focus) ? Appearance.colors.colSecondaryContainer :
         ColorUtils.transparentize(Appearance.colors.colSecondaryContainer, 1))
     colBackgroundHover: Appearance.colors.colSecondaryContainer
     colRipple: Appearance.colors.colSecondaryContainerActive
@@ -75,7 +73,7 @@ RippleButton {
     property list<string> urls: {
         if (!root.itemName) return [];
         // Regular expression to match URLs
-        const urlRegex = /https?:\/\/[^\s<>"{}|\\^`[\]]+/gi;
+        const urlRegex = /https?:[^[s<"{}|\\^`\[\]]+/gi;
         const matches = root.itemName?.match(urlRegex)
             ?.filter(url => !url.includes("…")) // Elided = invalid
         return matches ? matches : [];
@@ -91,7 +89,9 @@ RippleButton {
 
     onClicked: {
         GlobalStates.overviewOpen = false
-        root.itemExecute()
+        if (root.entry && typeof root.entry.execute === 'function') {
+            root.entry.execute()
+        }
     }
     Keys.onPressed: (event) => {
         if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
@@ -120,7 +120,7 @@ RippleButton {
             active: true
             sourceComponent: root.materialSymbol !== "" ? materialSymbolComponent :
                 root.bigText ? bigTextComponent :
-                root.itemIcon !== "" ? iconImageComponent : 
+                root.itemIcon !== "" ? iconImageComponent :
                 null
         }
 
@@ -220,7 +220,7 @@ RippleButton {
             font.pixelSize: Appearance.font.pixelSize.normal
             color: Appearance.colors.colSubtext
             horizontalAlignment: Text.AlignRight
-            text: root.itemClickActionName
+            text: String(root.itemClickActionName)
         }
 
         RowLayout {
@@ -234,7 +234,7 @@ RippleButton {
                     id: actionButton
                     required property var modelData
                     property string iconName: modelData.icon
-                    property string materialIconName: modelData.materialIcon
+                    property string materialIconName: ''
                     implicitHeight: 34
                     implicitWidth: 34
 
