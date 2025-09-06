@@ -73,7 +73,7 @@ Item { // Bar content region
                 colBackground: barTopSectionMouseArea.hovered ? Appearance.colors.colLayer1Hover : ColorUtils.transparentize(Appearance.colors.colLayer1Hover, 1)
             }
                 VerticalClockWidget {
-			    Layout.leftMargin: 3
+			    Layout.leftMargin: 1
                 Layout.fillWidth: true
                 Layout.fillHeight: false
             }
@@ -81,7 +81,7 @@ Item { // Bar content region
             HorizontalBarSeparator {}
 
             VerticalDateWidget {
-                 Layout.leftMargin: 2.4
+                // Layout.leftMargin: 0
                 Layout.fillWidth: true
                 Layout.fillHeight: false
             }
