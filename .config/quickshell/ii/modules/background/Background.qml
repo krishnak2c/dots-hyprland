@@ -245,9 +245,9 @@ Variants {
                         Layout.fillWidth: true
                         horizontalAlignment: bgRoot.textHorizontalAlignment
                         font {
-                            family: Appearance.font.family.expressive
+                            family: Appearance.font.family.main
                             pixelSize: 90
-                            weight: Font.Bold
+                            weight: Font.DemiBold
                         }
                         color: bgRoot.colText
                         style: Text.Raised
