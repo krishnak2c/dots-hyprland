@@ -26,10 +26,10 @@
   - **Transparent installation**: Every command is shown before it's run
 </details>
 <details> 
-  <summary>Installation (illogical-impulse<sup>Quickshell</sup>)</summary>
+  <summary>Installation (illogical-impulse Quickshell)</summary>
 
-   - See the [Wiki](https://end-4.github.io/dots-hyprland-wiki/en/ii-qs/01setup/)
-   - **Default keybinds**: Should be somewhat familiar to Windows or GNOME users. 
+   - See the [Wiki](https://end-4.github.io/dots-hyprland-wiki/en/ii-qs/01setup/) <sub>(both install script and manual installation available)</sub>
+   - **Default keybinds**: Should be somewhat familiar to Windows or GNOME users. Important ones:
      - `Super`+`/` = keybind list
      - `Super`+`Enter` = terminal
      - If for whatever reason the keybind list widget does not work, here's an image:
@@ -44,12 +44,11 @@
 
   | Software | Purpose |
   | ------------- | ------------- |
-  | [Hyprland](https://github.com/hyprwm/hyprland) | The compositor (for noobs, you can just call it a window manager) |
-  | [Quickshell](https://quickshell.outfoxxed.me/) | A QtQuick-based widget system, responsible for the status bar, sidebars, etc. |
+  | [Hyprland](https://github.com/hyprwm/hyprland) | The compositor (manages and renders windows) |
+  | [Quickshell](https://quickshell.outfoxxed.me/) | A QtQuick-based widget system, used for the status bar, sidebars, etc. |
 
-
-
-  - For a more comprehensive list of dependencies, see [scriptdata/dependencies.conf](https://github.com/end-4/dots-hyprland/blob/main/scriptdata/dependencies.conf)
+  - THERE IS NO WAYBAR
+  - For the full list of dependencies, see the [arch-packages folder](https://github.com/end-4/dots-hyprland/tree/main/arch-packages)
 </details>
 
 <details>
@@ -57,9 +56,6 @@
         <a href="https://discord.gg/GtdRBXgMwq"> Server link </a> | I hope this provides a friendlier environment for support without needing me to personally accept every friend request/DM. For real issues, prefer GitHub
 
 </details>
-
-_Note: **THERE IS NO FUCKING WAYBAR**_
-
 
 <div align="center">
     <h2>• screenshots •</h2>
@@ -93,4 +89,4 @@ Widget system: Quickshell | Support: Yes
 </div>
 
  - Inspiration: osu!lazer, Windows 11, Material Design 3, AvdanOS (concept)
- - Copying: The license allows you to. Personally I have absolutely no problem with others redistributing/recreating my work. There's no "stealing" (unless you do weird stuff and violate the license). (this note is here because some people actually asked)
+ - Copying: The license allows you to. Personally I have absolutely no problem with others redistributing/recreating my work. There's no "stealing" (unless you do weird stuff and violate the license). <sub>(this note is here because some people actually asked)</sub>
