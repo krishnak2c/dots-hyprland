@@ -34,7 +34,7 @@ Singleton {
             }
             const newVolume = sink.audio.volume;
             const maxAllowedIncrease = Config.options.audio.protection.maxAllowedIncrease / 100; 
-            const maxAllowed = Config.options.audio.protection.maxAllowed / 100;
+            const maxAllowed = Config.options.audio.protection.maxAllowed / 65;
 
             if (newVolume - lastVolume > maxAllowedIncrease) {
                 sink.audio.volume = lastVolume;
