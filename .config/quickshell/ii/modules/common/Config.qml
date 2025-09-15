@@ -135,6 +135,13 @@ Singleton {
                     property real workspaceZoom: 1.07 // Relative to your screen, not wallpaper size
                     property bool enableSidebar: true
                 }
+                property JsonObject blur: JsonObject {
+                    property bool enable: true
+                    property int radius: 100
+                    property bool centerClock: true
+                    property bool showLockedText: true
+                    property real extraZoom: 1.1
+                }
                 property string quote: ""
                 property bool hideWhenFullscreen: true
             }
@@ -174,8 +181,8 @@ Singleton {
                 property JsonObject tray: JsonObject {
                     property bool monochromeIcons: true
                     property bool showItemId: false
-                    property bool invertPinnedItems: false // Makes the below a whitelist for the tray and blacklist for the pinned area
-                    property list<string> pinnedItems: [ "Fcitx" ]
+                    property bool invertPinnedItems: true // Makes the below a whitelist for the tray and blacklist for the pinned area
+                    property list<string> pinnedItems: [ ]
                 }
                 property JsonObject workspaces: JsonObject {
                     property bool monochromeIcons: true
@@ -225,6 +232,9 @@ Singleton {
                     property int mouseScrollDeltaThreshold: 120 // delta >= this then it gets detected as mouse scroll rather than touchpad
                     property int mouseScrollFactor: 120
                     property int touchpadScrollFactor: 450
+                }
+                property JsonObject deadPixelWorkaround: JsonObject { // Hyprland leaves out 1 pixel on the right for interactions
+                    property bool enable: false
                 }
             }
 
