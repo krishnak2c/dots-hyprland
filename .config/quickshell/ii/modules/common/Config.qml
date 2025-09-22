@@ -92,7 +92,7 @@ Singleton {
                     property bool enableQtApps: true
                     property bool enableTerminal: true
                     property JsonObject terminalGenerationProps: JsonObject {
-                        property real harmony: 0.8
+                        property real harmony: 0.6
                         property real harmonizeThreshold: 100
                         property real termFgBoost: 0.35
                         property bool forceDarkMode: false
@@ -128,6 +128,8 @@ Singleton {
                 property bool showClock: true
                 property string wallpaperPath: ""
                 property string thumbnailPath: ""
+                property string quote: ""
+                property bool hideWhenFullscreen: true
                 property JsonObject parallax: JsonObject {
                     property bool vertical: false
                     property bool autoVertical: false
@@ -135,20 +137,26 @@ Singleton {
                     property real workspaceZoom: 1.07 // Relative to your screen, not wallpaper size
                     property bool enableSidebar: true
                 }
-                property JsonObject blur: JsonObject {
-                    property bool enable: true
+                property JsonObject lockBlur: JsonObject {
+                    property bool enable: false
                     property int radius: 100
                     property bool centerClock: true
                     property bool showLockedText: true
                     property real extraZoom: 1.1
                 }
-                property string quote: ""
-                property bool hideWhenFullscreen: true
+                property JsonObject wallpaperSafety: JsonObject {
+                    property bool enable: true
+                    property JsonObject triggerCondition: JsonObject {
+                        property list<string> wallpaperKeywords: ["anime", "ecchi", "hentai", "yande.re", "konachan", "breast", "nipples", "pussy", "nsfw", "spoiler", "girl"]
+                        property list<string> networkNameKeywords: ["guest", "public", "free", "airport"]
+                    }
+                }
             }
 
             property JsonObject bar: JsonObject {
                 property JsonObject autoHide: JsonObject {
                     property bool enable: false
+                    property int hoverRegionWidth: 2
                     property bool pushWindows: false
                     property JsonObject showWhenPressingSuper: JsonObject {
                         property bool enable: true
@@ -214,6 +222,11 @@ Singleton {
                 property bool autoKillTrays: false
             }
 
+            property JsonObject crosshair: JsonObject {
+                // Valorant crosshair format. Use https://www.vcrdb.net/builder
+                property string code: "0;P;d;1;0l;10;0o;2;1b;0"
+            }
+
             property JsonObject dock: JsonObject {
                 property bool enable: false
                 property bool monochromeIcons: true
@@ -263,6 +276,10 @@ Singleton {
 
             property JsonObject networking: JsonObject {
                 property string userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36"
+            }
+
+            property JsonObject notifications: JsonObject {
+                property int timeout: 7000
             }
 
             property JsonObject osd: JsonObject {
@@ -338,7 +355,11 @@ Singleton {
                     property int longBreak: 900
                 }
             }
-
+            
+            property JsonObject wallpaperSelector: JsonObject {
+                property bool useSystemFileDialog: false
+            }
+            
             property JsonObject windows: JsonObject {
                 property bool showTitlebar: true // Client-side decoration for shell apps
                 property bool centerTitle: true

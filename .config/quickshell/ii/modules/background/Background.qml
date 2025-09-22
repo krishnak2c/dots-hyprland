@@ -45,6 +45,10 @@ Variants {
             || Config.options.background.wallpaperPath.endsWith(".avi")
             || Config.options.background.wallpaperPath.endsWith(".mov")
         property string wallpaperPath: wallpaperIsVideo ? Config.options.background.thumbnailPath : Config.options.background.wallpaperPath
+        property bool wallpaperSafetyTriggered: Config.options.background.wallpaperSafety.enable && (
+            CF.StringUtils.stringListContainsSubstring(wallpaperPath.toLowerCase(), Config.options.background.wallpaperSafety.triggerCondition.wallpaperKeywords) &&
+            CF.StringUtils.stringListContainsSubstring(Network.networkName.toLowerCase(), Config.options.background.wallpaperSafety.triggerCondition.networkNameKeywords)
+        )
         property real wallpaperToScreenRatio: Math.min(wallpaperWidth / screen.width, wallpaperHeight / screen.height)
         property real preferredWallpaperScale: Config.options.background.parallax.workspaceZoom
         property real effectiveWallpaperScale: 1 // Some reasonable init value, to be updated
@@ -57,7 +61,7 @@ Variants {
         property real clockX: (modelData.width / 2)
         property real clockY: (modelData.height / 2)
         property var textHorizontalAlignment: {
-            if (Config.options.background.blur.enable && Config.options.background.blur.centerClock && GlobalStates.screenLocked)
+            if ((Config.options.background.lockBlur.enable && Config.options.background.lockBlur.centerClock && GlobalStates.screenLocked) || wallpaperSafetyTriggered)
                 return Text.AlignHCenter;
             if (clockX < screen.width / 3)
                 return Text.AlignLeft;
@@ -66,10 +70,63 @@ Variants {
             return Text.AlignHCenter;
         }
         // Colors
+        property bool shouldBlur: (GlobalStates.screenLocked && Config.options.background.lockBlur.enable)
         property color dominantColor: Appearance.colors.colPrimary
         property bool dominantColorIsDark: dominantColor.hslLightness < 0.5
-        property color colText: CF.ColorUtils.colorWithLightness(Appearance.colors.colPrimary, (dominantColorIsDark ? 0.8 : 0.12))
-        property bool shouldBlur: (GlobalStates.screenLocked && Config.options.background.blur.enable)
+        property color colText: {
+            if (wallpaperSafetyTriggered) return CF.ColorUtils.mix(Appearance.colors.colOnLayer0, Appearance.colors.colPrimary, 0.75);
+            return (GlobalStates.screenLocked && shouldBlur) ? Appearance.colors.colOnLayer0 : CF.ColorUtils.colorWithLightness(Appearance.colors.colPrimary, (dominantColorIsDark ? 0.8 : 0.12))
+        }
+        Behavior on colText {
+            animation: Appearance.animation.elementMoveFast.colorAnimation.createObject(this)
+        }
+
+        // Components
+        component ClockText: StyledText {
+            Layout.fillWidth: true
+            horizontalAlignment: bgRoot.textHorizontalAlignment
+            font {
+                family: Appearance.font.family.expressive
+                pixelSize: 20
+                weight: Font.DemiBold
+            }
+            color: bgRoot.colText
+            style: Text.Raised
+            styleColor: Appearance.colors.colShadow
+            animateChange: true
+        }
+        component ClockStatusText: RowLayout {
+            id: statusTextRow
+            property alias statusIcon: statusIconWidget.text
+            property alias statusText: statusTextWidget.text
+            property bool shown: true
+            opacity: shown ? 1 : 0
+            visible: opacity > 0
+            Behavior on opacity {
+                animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
+            }
+            Layout.fillWidth: false
+            MaterialSymbol {
+                id: statusIconWidget
+                Layout.fillWidth: false
+                iconSize: Appearance.font.pixelSize.huge
+                color: bgRoot.colText
+                style: Text.Raised
+                styleColor: Appearance.colors.colShadow
+            }
+            ClockText {
+                id: statusTextWidget
+                Layout.fillWidth: false
+                color: bgRoot.colText
+                font {
+                    family: Appearance.font.family.main
+                    pixelSize: Appearance.font.pixelSize.large
+                    weight: Font.Normal
+                }
+                style: Text.Raised
+                styleColor: Appearance.colors.colShadow
+            }
+        }
 
         // Layer props
         screen: modelData
@@ -83,7 +140,10 @@ Variants {
             left: true
             right: true
         }
-        color: "transparent"
+        color: CF.ColorUtils.mix(Appearance.colors.colLayer0, Appearance.colors.colPrimary, 0.75);
+        Behavior on color {
+            animation: Appearance.animation.elementMoveFast.colorAnimation.createObject(this)
+        }
 
         onWallpaperPathChanged: {
             bgRoot.updateZoomScale()
@@ -168,7 +228,7 @@ Variants {
         // Wallpaper
         Image {
             id: wallpaper
-            visible: opacity > 0
+            visible: opacity > 0 && !blurLoader.active
             opacity: (status === Image.Ready && !bgRoot.wallpaperIsVideo) ? 1 : 0
             Behavior on opacity {
                 animation: Appearance.animation.elementMoveEnter.numberAnimation.createObject(this)
@@ -203,7 +263,7 @@ Variants {
             property real effectiveValueY: Math.max(0, Math.min(1, valueY))
             x: -(bgRoot.movableXSpace) - (effectiveValueX - 0.5) * 2 * bgRoot.movableXSpace
             y: -(bgRoot.movableYSpace) - (effectiveValueY - 0.5) * 2 * bgRoot.movableYSpace
-            source: bgRoot.wallpaperPath
+            source: bgRoot.wallpaperSafetyTriggered ? "" : bgRoot.wallpaperPath
             fillMode: Image.PreserveAspectCrop
             Behavior on x {
                 NumberAnimation {
@@ -227,9 +287,9 @@ Variants {
 
         Loader {
             id: blurLoader
-            active: Config.options.background.blur.enable && (GlobalStates.screenLocked || scaleAnim.running)
+            active: Config.options.background.lockBlur.enable && (GlobalStates.screenLocked || scaleAnim.running)
             anchors.fill: wallpaper
-            scale: GlobalStates.screenLocked ? Config.options.background.blur.extraZoom : 1
+            scale: GlobalStates.screenLocked ? Config.options.background.lockBlur.extraZoom : 1
             Behavior on scale {
                 NumberAnimation {
                     id: scaleAnim
@@ -240,10 +300,11 @@ Variants {
             }
             sourceComponent: GaussianBlur {
                 source: wallpaper
-                radius: GlobalStates.screenLocked ? Config.options.background.blur.radius : 0
+                radius: GlobalStates.screenLocked ? Config.options.background.lockBlur.radius : 0
                 samples: radius * 2 + 1
 
                 Rectangle {
+                    opacity: GlobalStates.screenLocked ? 1 : 0
                     anchors.fill: parent
                     color: CF.ColorUtils.transparentize(Appearance.colors.colLayer0, 0.7)
                 }
@@ -258,6 +319,7 @@ Variants {
                 left: wallpaper.left
                 top: wallpaper.top
                 horizontalCenter: undefined
+                verticalCenter: undefined
                 leftMargin: bgRoot.movableXSpace + ((root.fixedClockPosition ? root.fixedClockX : bgRoot.clockX * bgRoot.effectiveWallpaperScale) - implicitWidth / 2)
                 topMargin: {
                     if (bgRoot.shouldBlur)
@@ -273,13 +335,15 @@ Variants {
             }
             states: State {
                 name: "centered"
-                when: bgRoot.shouldBlur
+                when: (bgRoot.shouldBlur && Config.options.background.lockBlur.centerClock) || bgRoot.wallpaperSafetyTriggered
                 AnchorChanges {
                     target: clockLoader
                     anchors {
                         left: undefined
-                        horizontalCenter: wallpaper.horizontalCenter
                         right: undefined
+                        top: undefined
+                        verticalCenter: parent.verticalCenter
+                        horizontalCenter: parent.horizontalCenter
                     }
                 }
             }
@@ -300,45 +364,26 @@ Variants {
                     anchors.centerIn: parent
                     spacing: 6
 
-                    StyledText {
+                    ClockText {
+                        font.pixelSize: 90
+                        text: DateTime.time
+                    }
+                    ClockText {
+                        Layout.topMargin: -5
+                        text: DateTime.date
+                    }
+                    StyledText { // Somehow gets fucked up if made a ClockText???
+                        visible: Config.options.background.quote.length > 0
                         Layout.fillWidth: true
                         horizontalAlignment: bgRoot.textHorizontalAlignment
                         font {
                             family: Appearance.font.family.main
-                            pixelSize: 90
-                            weight: Font.DemiBold
+                            pixelSize: Appearance.font.pixelSize.normal
+                            weight: 350
+                            italic: true
                         }
                         color: bgRoot.colText
                         style: Text.Raised
-                        styleColor: Appearance.colors.colShadow
-                        text: DateTime.time
-                    }
-                    StyledText {
-                        Layout.fillWidth: true
-                        Layout.topMargin: -5
-                        horizontalAlignment: bgRoot.textHorizontalAlignment
-                        font {
-                            family: Appearance.font.family.expressive
-                            pixelSize: 20
-                            weight: Font.DemiBold
-                        }
-                        color: bgRoot.colText
-                        style: Text.Raised
-                        styleColor: Appearance.colors.colShadow
-                        text: DateTime.date
-                        animateChange: true
-                    }
-                    StyledText {
-                        Layout.fillWidth: true
-                        horizontalAlignment: bgRoot.textHorizontalAlignment
-                        font {
-                            family: Appearance.font.family.expressive
-                            pixelSize: 20
-                            weight: Font.DemiBold
-                        }
-                        color: bgRoot.colText
-                        style: Text.Raised
-                        visible: Config.options.background.quote !== ""
                         styleColor: Appearance.colors.colShadow
                         text: Config.options.background.quote
                     }
@@ -350,31 +395,21 @@ Variants {
                         left: bgRoot.textHorizontalAlignment === Text.AlignLeft ? clockColumn.left : undefined
                         right: bgRoot.textHorizontalAlignment === Text.AlignRight ? clockColumn.right : undefined
                         horizontalCenter: bgRoot.textHorizontalAlignment === Text.AlignHCenter ? clockColumn.horizontalCenter : undefined
-                        topMargin: 5
-                        leftMargin: -5
-                        rightMargin: -5
+                        topMargin: 14
+                        leftMargin: -6
+                        rightMargin: -6
                     }
-                    opacity: GlobalStates.screenLocked && (!Config.options.background.blur.enable || Config.options.background.blur.showLockedText) ? 1 : 0
-                    visible: opacity > 0
-                    Behavior on opacity {
-                        animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
-                    }
+                    spacing: 16
                     Item { Layout.fillWidth: bgRoot.textHorizontalAlignment !== Text.AlignLeft; implicitWidth: 1 }
-                    MaterialSymbol {
-                        text: "lock"
-                        Layout.fillWidth: false
-                        iconSize: Appearance.font.pixelSize.huge
-                        color: bgRoot.colText
-                        style: Text.Raised
-                        styleColor: Appearance.colors.colShadow
+                    ClockStatusText {
+                        shown: bgRoot.wallpaperSafetyTriggered
+                        statusIcon: "hide_image"
+                        statusText: qsTr("Wallpaper safety enforced")
                     }
-                    StyledText {
-                        Layout.fillWidth: false
-                        text: "Locked"
-                        color: bgRoot.colText
-                        font.pixelSize: Appearance.font.pixelSize.larger
-                        style: Text.Raised
-                        styleColor: Appearance.colors.colShadow
+                    ClockStatusText {
+                        shown: GlobalStates.screenLocked && (!Config.options.background.lockBlur.enable || Config.options.background.lockBlur.showLockedText)
+                        statusIcon: "lock"
+                        statusText: qsTr("Locked")
                     }
                     Item { Layout.fillWidth: bgRoot.textHorizontalAlignment !== Text.AlignRight; implicitWidth: 1 }
 
