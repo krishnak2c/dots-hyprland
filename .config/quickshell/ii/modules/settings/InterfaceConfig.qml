@@ -14,9 +14,42 @@ ContentPage {
 
         ConfigSwitch {
             text: Translation.tr("Show clock")
-            checked: Config.options.background.showClock
+            checked: Config.options.background.clock.show
             onCheckedChanged: {
-                Config.options.background.showClock = checked;
+                Config.options.background.clock.show = checked;
+            }
+        }
+
+        ConfigSpinBox {
+            text: Translation.tr("Scale (%)")
+            value: Config.options.background.clock.scale * 100
+            from: 1
+            to: 200
+            stepSize: 2
+            onValueChanged: {
+                Config.options.background.clock.scale = value / 100;
+            }
+        }
+
+        ContentSubsection {
+            title: Translation.tr("Clock style")
+            ConfigSelectionArray {
+                currentValue: Config.options.background.clock.style
+                onSelected: newValue => {
+                    Config.options.background.clock.style = newValue;
+                }
+                options: [
+                    {
+                        displayName: Translation.tr("Simple digital"),
+                        icon: "timer_10",
+                        value: "digital"
+                    },
+                    {
+                        displayName: Translation.tr("Material cookie"),
+                        icon: "cookie",
+                        value: "cookie"
+                    },
+                ]
             }
         }
 
@@ -138,36 +171,40 @@ ContentPage {
             title: Translation.tr("Blurred style")
 
             ConfigSwitch {
-                font.pixelSize: Appearance.font.pixelSize.large
                 text: Translation.tr('Enable blur')
-                checked: Config.options.background.lockBlur.enable
+                checked: Config.options.lock.blur.enable
                 onCheckedChanged: {
-                    Config.options.background.lockBlur.enable = checked;
+                    Config.options.lock.blur.enable = checked;
                 }
             }
 
-            ConfigRow {
-                uniform: true
-
-                ConfigSwitch {
-                    enabled: Config.options.background.lockBlur.enable
-                    font.pixelSize: Appearance.font.pixelSize.large
-                    text: Translation.tr('Center clock')
-                    checked: Config.options.background.lockBlur.centerClock
-                    onCheckedChanged: {
-                        Config.options.background.lockBlur.centerClock = checked;
-                    }
-                }
-                ConfigSwitch {
-                    enabled: Config.options.background.lockBlur.enable
-                    font.pixelSize: Appearance.font.pixelSize.large
-                    text: Translation.tr('Show "Locked" text')
-                    checked: Config.options.background.lockBlur.showLockedText
-                    onCheckedChanged: {
-                        Config.options.background.lockBlur.showLockedText = checked;
-                    }
+            ConfigSpinBox {
+                text: Translation.tr("Blur: Extra zoom (%)")
+                value: Config.options.lock.blur.extraZoom * 100
+                from: 1
+                to: 150
+                stepSize: 2
+                onValueChanged: {
+                    Config.options.lock.blur.extraZoom = value / 100;
                 }
             }
+
+            ConfigSwitch {
+                text: Translation.tr('Center clock')
+                checked: Config.options.lock.centerClock
+                onCheckedChanged: {
+                    Config.options.lock.centerClock = checked;
+                }
+            }
+            
+            ConfigSwitch {
+                text: Translation.tr('Show "Locked" text')
+                checked: Config.options.lock.showLockedText
+                onCheckedChanged: {
+                    Config.options.lock.showLockedText = checked;
+                }
+            }
+            
 
         }
     }
