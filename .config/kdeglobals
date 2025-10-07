@@ -1,6 +1,6 @@
 [ColorEffects:Disabled]
 ChangeSelectionColor=
-Color=#211f24
+Color=#1d1d1e
 ColorAmount=0.5
 ColorEffect=3
 ContrastAmount=0
@@ -11,7 +11,7 @@ IntensityEffect=0
 
 [ColorEffects:Inactive]
 ChangeSelectionColor=true
-Color=#0c0a10
+Color=#0b0b0b
 ColorAmount=0.025
 ColorEffect=0
 ContrastAmount=0.1
@@ -21,123 +21,129 @@ IntensityAmount=0
 IntensityEffect=0
 
 [Colors:Button]
-BackgroundAlternate=#47434c
-BackgroundNormal=#2b292f
-DecorationFocus=#cdb9fb
-DecorationHover=#cdb9fb
-ForegroundActive=#e6e0e9
-ForegroundInactive=#948f99
+BackgroundAlternate=#474747
+BackgroundNormal=#2a2a2a
+DecorationFocus=#ffade4
+DecorationHover=#ffade4
+ForegroundActive=#e2e2e2
+ForegroundInactive=#919191
 ForegroundLink=#8fc9fc
 ForegroundNegative=#ffb3b4
 ForegroundNeutral=#fcb38a
-ForegroundNormal=#e6e0e9
+ForegroundNormal=#e2e2e2
 ForegroundPositive=#00e479
 ForegroundVisited=#ebb2ff
 
 [Colors:Complementary]
-BackgroundAlternate=#121016
-BackgroundNormal=#211f24
-DecorationFocus=#cdb9fb
-DecorationHover=#cdb9fb
-ForegroundActive=#e6e0e9
-ForegroundInactive=#948f99
+BackgroundAlternate=#111111
+BackgroundNormal=#1d1d1e
+DecorationFocus=#ffade4
+DecorationHover=#ffade4
+ForegroundActive=#e2e2e2
+ForegroundInactive=#919191
 ForegroundLink=#8fc9fc
 ForegroundNegative=#ffb3b4
 ForegroundNeutral=#fcb38a
-ForegroundNormal=#cac4cf
+ForegroundNormal=#c6c6c6
 ForegroundPositive=#00e479
 ForegroundVisited=#ebb2ff
 
 [Colors:Header]
-BackgroundAlternate=#211f24
-BackgroundNormal=#211f24
-DecorationFocus=#cdb9fb
-DecorationHover=#cdb9fb
-ForegroundActive=#e6e0e9
-ForegroundInactive=#948f99
+BackgroundAlternate=#1d1d1e
+BackgroundNormal=#1d1d1e
+DecorationFocus=#ffade4
+DecorationHover=#ffade4
+ForegroundActive=#e2e2e2
+ForegroundInactive=#919191
 ForegroundLink=#8fc9fc
 ForegroundNegative=#ffb3b4
 ForegroundNeutral=#fcb38a
-ForegroundNormal=#cac4cf
+ForegroundNormal=#c6c6c6
 ForegroundPositive=#00e479
 ForegroundVisited=#ebb2ff
 
 [Colors:Header][Inactive]
-BackgroundAlternate=#211f24
-BackgroundNormal=#211f24
-DecorationFocus=#cdb9fb
-DecorationHover=#cdb9fb
-ForegroundActive=#e6e0e9
-ForegroundInactive=#948f99
+BackgroundAlternate=#1d1d1e
+BackgroundNormal=#1d1d1e
+DecorationFocus=#ffade4
+DecorationHover=#ffade4
+ForegroundActive=#e2e2e2
+ForegroundInactive=#919191
 ForegroundLink=#8fc9fc
 ForegroundNegative=#ffb3b4
 ForegroundNeutral=#fcb38a
-ForegroundNormal=#cac4cf
+ForegroundNormal=#c6c6c6
 ForegroundPositive=#00e479
 ForegroundVisited=#ebb2ff
 
 [Colors:Selection]
-BackgroundAlternate=#cdb9fb
-BackgroundNormal=#cdb9fb
-DecorationFocus=#cdb9fb
-DecorationHover=#c9bfd8
-ForegroundActive=#36265d
-ForegroundInactive=#36265d
+BackgroundAlternate=#ffade4
+BackgroundNormal=#ffade4
+DecorationFocus=#ffade4
+DecorationHover=#ddbed0
+ForegroundActive=#58124a
+ForegroundInactive=#58124a
 ForegroundLink=#004b73
 ForegroundNegative=#920023
 ForegroundNeutral=#753400
-ForegroundNormal=#36265d
+ForegroundNormal=#58124a
 ForegroundPositive=#005228
 ForegroundVisited=#74009f
 
 [Colors:Tooltip]
-BackgroundAlternate=#47434c
-BackgroundNormal=#211f24
-DecorationFocus=#cdb9fb
-DecorationHover=#cdb9fb
-ForegroundActive=#e6e0e9
-ForegroundInactive=#948f99
+BackgroundAlternate=#474747
+BackgroundNormal=#1d1d1e
+DecorationFocus=#ffade4
+DecorationHover=#ffade4
+ForegroundActive=#e2e2e2
+ForegroundInactive=#919191
 ForegroundLink=#8fc9fc
 ForegroundNegative=#ffb3b4
 ForegroundNeutral=#fcb38a
-ForegroundNormal=#e6e0e9
+ForegroundNormal=#e2e2e2
 ForegroundPositive=#00e479
 ForegroundVisited=#ebb2ff
 
 [Colors:View]
-BackgroundAlternate=#211f24
-BackgroundNormal=#121016
-DecorationFocus=#cdb9fb
-DecorationHover=#65558f
-ForegroundActive=#e6e0e9
-ForegroundInactive=#948f99
+BackgroundAlternate=#1d1d1e
+BackgroundNormal=#111111
+DecorationFocus=#ffade4
+DecorationHover=#8f437c
+ForegroundActive=#e2e2e2
+ForegroundInactive=#919191
 ForegroundLink=#8fc9fc
 ForegroundNegative=#ffb3b4
 ForegroundNeutral=#fcb38a
-ForegroundNormal=#e6e0e9
+ForegroundNormal=#e2e2e2
 ForegroundPositive=#00e479
 ForegroundVisited=#ebb2ff
 
 [Colors:Window]
-BackgroundAlternate=#47434c
-BackgroundNormal=#211f24
-DecorationFocus=#cdb9fb
-DecorationHover=#cdb9fb
+BackgroundAlternate=#474747
+BackgroundNormal=#1d1d1e
+DecorationFocus=#ffade4
+DecorationHover=#ffade4
 ForegroundActive=#8fc9fc
-ForegroundInactive=#948f99
+ForegroundInactive=#919191
 ForegroundLink=#8fc9fc
 ForegroundNegative=#ffb3b4
 ForegroundNeutral=#fcb38a
-ForegroundNormal=#cac4cf
+ForegroundNormal=#c6c6c6
 ForegroundPositive=#00e479
 ForegroundVisited=#ebb2ff
 
+[DirSelect Dialog]
+DirSelectDialog Size=960,585
+History Items[$e]=file:$HOME/Downloads/dots-hyprland/.config/,file:$HOME/Downloads/dots-hyprland/.config/,file:$HOME/Downloads/dots-hyprland/.config/,file:$HOME/Downloads/dots-hyprland/.config/,file:$HOME/Downloads/dots-hyprland/.config/,file:$HOME/Downloads/dots-hyprland/.config,file:$HOME/Downloads/dots-hyprland/.config/,file:$HOME/Downloads/dots-hyprland/.config/,file:$HOME/Downloads/dots-hyprland/.config/,file:$HOME/Documents/Projects/obsidian-telegram-inbox,file:$HOME/Documents/Projects/obsidian-telegram-inbox,file:$HOME/Downloads/dots-hyprland/.config/,file:$HOME/Downloads/dots-hyprland/.config/,file:$HOME/Downloads/dots-hyprland/.config/,file:$HOME/Downloads/dots-hyprland/.config/,file:$HOME/Downloads/dots-hyprland/.config/,file:$HOME/Downloads/dots-hyprland/.config/,file:$HOME/Downloads/dots-hyprland/.config/,file:$HOME/Downloads/dots-hyprland/.config/,file:$HOME/Downloads/dots-hyprland/.config/,file:$HOME/Downloads/dots-hyprland/.config/,file:$HOME/Downloads/dots-hyprland/.config/,file:$HOME/Downloads/dots-hyprland/.config/,file:$HOME/Downloads/dots-hyprland/.config/,file:$HOME/Downloads/dots-hyprland/.config/,file:$HOME/dots-hyperland,file:$HOME/.config/,file:$HOME/.config/quickshell/ii/,file:$HOME/.config/qui,file:$HOME/.config/,file:$HOME/.config/quickshell/ii/modules/dock,file:$HOME/.zen/5xjl0gys.Default (release),file:$HOME/.zen/,file:$HOME/.zen/,file:$HOME/Vivaldi-css,file:$HOME/Downloads,file:$HOME/Downloads/dots-hyprland/.config/,file:$HOME/dots-hyperland,file:$HOME/dots-hyperland,file:$HOME/Downloads/dots-hyprland/.config/,file:$HOME/dots-hyperland,file:$HOME/Downloads/dots-hyprland,file:$HOME/dots-hyperland,file:$HOME/Downloads/dots-hyprland/.config/,file:$HOME/dots-hyperland,file:$HOME/dots-hyperland,file:$HOME/Downloads/dots-hyprland,file:$HOME/dots-hyperland,file:$HOME/Downloads/dots-hyprland/.config/,file:$HOME/dots-hyperland
+Splitter State=\x00\x00\x00\xff\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00\xa8\x00\x00\x02\xa8\x00\xff\xff\xff\xff\x01\x00\x00\x00\x01\x00
+
 [General]
 ColorScheme=MaterialYouDark
-ColorSchemeHash=3c0cecefbea43cdb8fe3da156e4a106f7384a526
+ColorSchemeHash=95d30c60abeb001d9e337253db57f7da8a30c937
 LastUsedCustomAccentColor=184,117,220
+TerminalApplication=kitty
+TerminalService=kitty.desktop
 XftHintStyle=hintslight
-TerminalApplication=kitty -1
 XftSubPixel=none
 fixed=JetBrainsMono Nerd Font,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1
 font=Rubik,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1
@@ -146,21 +152,25 @@ smallestReadableFont=Rubik,9,-1,5,400,0,0,0,0,0,0,0,0,0,0,1
 toolBarFont=Rubik,10,-1,5,400,0,0,0,0,0,0,0,0,0,0,1
 
 [Icons]
-Theme=breeze-dark
+Theme=Tela-circle-dracula
+
+[KDE]
+LookAndFeelPackage=org.kde.breezedark.desktop
+ShowDeleteCommand=false
+widgetStyle=Darkly
 
 [KFileDialog Settings]
 Allow Expansion=false
 Automatically select filename extension=true
-Breadcrumb Navigation=true
+Breadcrumb Navigation=false
 Decoration position=2
 LocationCombo Completionmode=5
 PathCombo Completionmode=5
-Show Bookmarks=false
 Show Full Path=false
 Show Inline Previews=true
 Show Preview=false
 Show Speedbar=true
-Show hidden files=false
+Show hidden files=true
 Sort by=Name
 Sort directories first=true
 Sort hidden files last=false
@@ -168,14 +178,15 @@ Sort reversed=false
 Speedbar Width=168
 View Style=Simple
 
-[Sounds]
-Theme=freedesktop
+[PreviewSettings]
+EnableRemoteFolderThumbnail=false
+MaximumRemoteSize=0
 
 [WM]
-activeBackground=54,52,58
+activeBackground=53,53,53
 activeBlend=252,252,252
 activeFont=Rubik,10,-1,5,400,0,0,0,0,0,0,0,0,0,0,1
-activeForeground=230,224,233
-inactiveBackground=76,70,90
+activeForeground=226,226,226
+inactiveBackground=91,69,83
 inactiveBlend=161,169,177
-inactiveForeground=232,222,248
+inactiveForeground=250,218,236
