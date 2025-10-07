@@ -42,7 +42,12 @@ Variants {
         // Wallpaper
         property bool wallpaperIsVideo: Config.options.background.wallpaperPath.endsWith(".mp4") || Config.options.background.wallpaperPath.endsWith(".webm") || Config.options.background.wallpaperPath.endsWith(".mkv") || Config.options.background.wallpaperPath.endsWith(".avi") || Config.options.background.wallpaperPath.endsWith(".mov")
         property string wallpaperPath: wallpaperIsVideo ? Config.options.background.thumbnailPath : Config.options.background.wallpaperPath
-        property bool wallpaperSafetyTriggered: Config.options.background.wallpaperSafety.enable && (CF.StringUtils.stringListContainsSubstring(wallpaperPath.toLowerCase(), Config.options.background.wallpaperSafety.triggerCondition.wallpaperKeywords) && CF.StringUtils.stringListContainsSubstring(Network.networkName.toLowerCase(), Config.options.background.wallpaperSafety.triggerCondition.networkNameKeywords))
+        property bool wallpaperSafetyTriggered: {
+            const enabled = Config.options.workSafety.enable.wallpaper
+            const sensitiveWallpaper = (CF.StringUtils.stringListContainsSubstring(wallpaperPath.toLowerCase(), Config.options.workSafety.triggerCondition.fileKeywords))
+            const sensitiveNetwork = (CF.StringUtils.stringListContainsSubstring(Network.networkName.toLowerCase(), Config.options.workSafety.triggerCondition.networkNameKeywords))
+            return enabled && sensitiveWallpaper && sensitiveNetwork;
+        }
         property real wallpaperToScreenRatio: Math.min(wallpaperWidth / screen.width, wallpaperHeight / screen.height)
         property real preferredWallpaperScale: Config.options.background.parallax.workspaceZoom
         property real effectiveWallpaperScale: 1 // Some reasonable init value, to be updated
@@ -170,16 +175,11 @@ Variants {
             anchors.fill: parent
             clip: true
 
-            Image {
+            StyledImage {
                 id: wallpaper
                 visible: opacity > 0 && !blurLoader.active
                 opacity: (status === Image.Ready && !bgRoot.wallpaperIsVideo) ? 1 : 0
-                Behavior on opacity {
-                    animation: Appearance.animation.elementMoveEnter.numberAnimation.createObject(this)
-                }
                 cache: false
-                asynchronous: true
-                retainWhileLoading: true
                 smooth: false
                 // Range = groups that workspaces span on
                 property int chunkSize: Config?.options.bar.workspaces.shown ?? 10
@@ -295,9 +295,7 @@ Variants {
                         easing.bezierCurve: Appearance.animation.elementMove.bezierCurve
                     }
                 }
-                sourceComponent: ColumnLayout {
-                    spacing: 8
-
+                sourceComponent: Column {
                     Loader {
                         id: digitalClockLoader
                         visible: root.clockStyle === "digital"
@@ -335,7 +333,6 @@ Variants {
 
                     Loader {
                         id: cookieClockLoader
-                        Layout.alignment: Qt.AlignHCenter
                         visible: root.clockStyle === "cookie"
                         active: visible
                         sourceComponent: CookieClock {}
@@ -394,13 +391,13 @@ Variants {
                                 id: safetyStatusText
                                 shown: bgRoot.wallpaperSafetyTriggered
                                 statusIcon: "hide_image"
-                                statusText: qsTr("Wallpaper safety enforced")
+                                statusText: Translation.tr("Wallpaper safety enforced")
                             }
                             ClockStatusText {
                                 id: lockStatusText
                                 shown: GlobalStates.screenLocked && Config.options.lock.showLockedText
                                 statusIcon: "lock"
-                                statusText: qsTr("Locked")
+                                statusText: Translation.tr("Locked")
                             }
                             Item {
                                 Layout.fillWidth: bgRoot.textHorizontalAlignment !== Text.AlignRight
@@ -427,7 +424,7 @@ Variants {
         styleColor: Appearance.colors.colShadow
         animateChange: true
     }
-    component ClockStatusText: RowLayout {
+    component ClockStatusText: Row {
         id: statusTextRow
         property alias statusIcon: statusIconWidget.text
         property alias statusText: statusTextWidget.text
@@ -438,10 +435,10 @@ Variants {
         Behavior on opacity {
             animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
         }
-        Layout.fillWidth: false
+        spacing: 4
         MaterialSymbol {
             id: statusIconWidget
-            Layout.fillWidth: false
+            anchors.verticalCenter: statusTextRow.verticalCenter
             iconSize: Appearance.font.pixelSize.huge
             color: statusTextRow.textColor
             style: Text.Raised
@@ -449,8 +446,8 @@ Variants {
         }
         ClockText {
             id: statusTextWidget
-            Layout.fillWidth: false
             color: statusTextRow.textColor
+            anchors.verticalCenter: statusTextRow.verticalCenter
             font {
                 family: Appearance.font.family.main
                 pixelSize: Appearance.font.pixelSize.large
