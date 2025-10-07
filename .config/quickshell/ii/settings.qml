@@ -71,8 +71,8 @@ ApplicationWindow {
         MaterialThemeLoader.reapplyTheme()
     }
 
-    minimumWidth: 750
-    minimumHeight: 500
+    minimumWidth: 600
+    minimumHeight: 400
     width: 1100
     height: 750
     color: Appearance.m3colors.m3background
